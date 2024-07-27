@@ -1,6 +1,5 @@
 import os
 import cv2
-import argparse
 import numpy as np
 import mediapipe as mp
 
@@ -55,9 +54,9 @@ class Extractor:
                 faceMesh_keypoints.append([landmark.x, landmark.y, landmark.z])
             self.FACEMESH_KEYPOINTS.append(faceMesh_keypoints)
 
-    def worker(self):
+    def worker(self, SOURCE_PATH, MODEL, DEST_PATH):
         for file in tqdm(os.listdir(SOURCE_PATH)):
-            filename = str(os.path.splitext(file)[0])
+            filename = str(os.path.splfitext(file)[0])
             file_path = os.path.join(SOURCE_PATH, file)
 
             self.POSE_KEYPOINTS = []
@@ -89,18 +88,3 @@ class Extractor:
 
             if self.HANDS_KEYPOINTS:
                 np.save(f"{DEST_PATH}/{filename}_hands.npy", self.HANDS_KEYPOINTS)
-            
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-srcPath', required=True, help='Source Path')
-    parser.add_argument('-destPath', required=True, help='Feature Destination Path')
-    parser.add_argument('-model', nargs='+', required=False, help='Use Models')
-    args = parser.parse_args()
-
-    SOURCE_PATH = args.srcPath
-    DEST_PATH = args.destPath
-    MODEL = args.model
-
-    extractor = Extractor()
-    extractor.worker()
